@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#info {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  color: #ffff00
+}
+
+body {
+  overflow: hidden;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="info">HW3<br>
+<button id="view" style="width:15%;margin-right:30px;">viewpoint</button>
+</div>
+
+<script src="https://threejs.org/build/three.min.js"></script>
+<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+</script>
+
+<script>
+
+$("#view").click(function() {
+  if (times>10 ||times==0) {
+    view = !view;
+    if (!view) {
+      times = 0;
+      multi = 1;
+      setTimeout(plus, 0);
+    } else {
+      view = !view;
+      times = 10;
+      multi = 2;
+      setTimeout(minus, 0);
+    }
+  }
+})
+
+
+
+var camera, cameraT, cameraF, cameraR, scene, renderer;
+var clock;
+var angle = 0;
+var rotate;
+var times = 0,
+  multi = 1;
+var view = true;
+
+
+init();
+animate();
+
+function init() {
+
+  scene = new THREE.Scene();
+
+  camera = new THREE.OrthographicCamera(-15, 15, 15, -15, -400, 100);
+  camera.position.set(20, 20, 20);
+
+
+
+
+
+  cameraT = new THREE.OrthographicCamera(-15, 15, 15, -15, -400, 100);
+  cameraT.position.set(0, 20, 0);
+  cameraT.up.set(0, 0, -1); // -Z
+  cameraT.lookAt(0, 0, 0);
+
+  cameraF = new THREE.OrthographicCamera(-15, 15, 15, -15, -400, 100);
+  cameraF.position.set(0, 0, 20);
+  cameraF.lookAt(0, 0, 0);
+
+
+
+  cameraR = new THREE.OrthographicCamera(-15, 15, 15, -15, -400, 100);
+  cameraR.position.set(-20, 0, 0);
+  cameraR.lookAt(0, 0, 0);
+
+
+
+  const light = new THREE.PointLight(0xffffff, 1, 0, 2);
+  light.position.set(-20, 20, 30);
+  rotate = new THREE.Group();
+  rotate.add(light);
+  scene.add(rotate);
+
+
+
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x888888);
+
+  let controls = new THREE.OrbitControls(camera, renderer.domElement);
+  document.body.appendChild(renderer.domElement);
+
+  let plane = new THREE.Shape();
+  plane.moveTo(0, 0);
+  plane.absarc(0, 0, 4, Math.PI / 2, Math.PI * 3 / 2)
+  plane.lineTo(10, -4);
+  plane.absarc(10, -2, 2, Math.PI * 3 / 2, 0);
+  plane.absarc(10, 2, 2, 0, Math.PI / 2);
+
+
+  var hole1 = new THREE.Path();
+  hole1.moveTo(10, 2);
+  hole1.absarc(10, 2, 1, 0, Math.PI * 2);
+  plane.holes.push(hole1);
+
+  var hole2 = new THREE.Path();
+  hole2.moveTo(10, -2);
+  hole2.absarc(10, -2, 1, 0, Math.PI * 2);
+  plane.holes.push(hole2);
+
+  var hole3 = new THREE.Path();
+  hole3.moveTo(0, 0);
+  hole3.absarc(0, 0, 2, 0, Math.PI * 2);
+  plane.holes.push(hole3);
+  var planeextrudeSettings = {
+    steps: 1,
+    depth: 2,
+    bevelEnabled: false,
+  };
+  var planegeometry = new THREE.ExtrudeGeometry(plane, planeextrudeSettings);
+  var material = new THREE.MeshPhongMaterial({
+    color: 0xffd700,
+  });
+  material.shininess = 200;
+  var planeMesh = new THREE.Mesh(planegeometry, material);
+  planeMesh.position.x = 4;
+
+
+  let circle1 = new THREE.Shape();
+  circle1.absarc(4, 0, 4, 0, Math.PI * 2)
+  var tophole = new THREE.Path();
+  tophole.absarc(4, 0, 3, 0, Math.PI * 2);
+  circle1.holes.push(tophole);
+  var circle1extrudeSettings = {
+    steps: 1,
+    depth: 3, // extrude along +Z
+    bevelEnabled: false,
+  };
+  var circle1geometry = new THREE.ExtrudeGeometry(circle1, circle1extrudeSettings);
+  var circle1Mesh = new THREE.Mesh(circle1geometry, material);
+  circle1Mesh.position.z = -2.5;
+
+
+
+  let circle2 = new THREE.Shape();
+  circle2.absarc(4, 0, 4, 0, Math.PI * 2)
+  var downhole = new THREE.Path();
+  downhole.absarc(4, 0, 2, 0, Math.PI * 2);
+  circle2.holes.push(downhole);
+  var circle2extrudeSettings = {
+    steps: 1,
+    depth: 5, // extrude along +Z
+    bevelEnabled: false,
+  };
+  var circle2geometry = new THREE.ExtrudeGeometry(circle2, circle1extrudeSettings);
+  var circle2Mesh = new THREE.Mesh(circle2geometry, material);
+  circle2Mesh.position.z = 0.5;
+
+
+  var group = new THREE.Group();
+  group.add(planeMesh);
+  group.add(circle1Mesh);
+  group.add(circle2Mesh);
+
+  scene.add(group);
+  group.rotation.x = Math.PI / 2;
+  group.position.x = -4;
+  group.position.y = 4;
+
+
+  renderer.autoClear = false;
+
+}
+
+function plus() {
+  if (times < 10 && !view) {
+    times += 0.1;
+    multi += 0.01;
+    setTimeout(plus, 50);
+  }
+}
+
+function minus() {
+  if (times > -0.1 && !view) {
+    times -= 0.1;
+    multi -= 0.01;
+    setTimeout(minus, 20);
+  }
+}
+
+
+function animate() {
+  if (times < 0) {
+    view = !view;
+    times = 0;
+  }
+  requestAnimationFrame(animate);
+  render();
+}
+
+function render() {
+  var WW = window.innerWidth;
+  var HH = window.innerHeight;
+
+  renderer.clear();
+  if (view) {
+
+
+    renderer.setViewport(0, HH / 2, WW / 2, HH / 2);
+    renderer.render(scene, cameraT);
+
+    renderer.setViewport(WW / 2, 0, WW / 2, HH / 2);
+    renderer.render(scene, cameraR);
+
+    renderer.setViewport(0, 0, WW / 2, HH / 2);
+    renderer.render(scene, cameraF);
+  } else {
+    renderer.setViewport(WW / 2 - WW * times / 20, HH / 2 - HH * times / 20, WW * times * multi / 20, HH * times * multi / 20);
+    renderer.render(scene, camera);
+  }
+}
+
+
+</script>
+</body>
+
+</html>
