@@ -128,7 +128,8 @@ function init() {
   hole3.absarc(0, 0, 2, 0, Math.PI * 2);
   plane.holes.push(hole3);
   var planeextrudeSettings = {
-    steps: 1,
+    curveSegments : 1200,
+	steps: 1,
     depth: 2,
     bevelEnabled: false,
   };
@@ -147,7 +148,8 @@ function init() {
   tophole.absarc(4, 0, 3, 0, Math.PI * 2);
   circle1.holes.push(tophole);
   var circle1extrudeSettings = {
-    steps: 1,
+    curveSegments : 1200,
+	steps: 1,
     depth: 3, // extrude along +Z
     bevelEnabled: false,
   };
@@ -163,11 +165,12 @@ function init() {
   downhole.absarc(4, 0, 2, 0, Math.PI * 2);
   circle2.holes.push(downhole);
   var circle2extrudeSettings = {
-    steps: 1,
+    curveSegments : 1200,
+	steps: 1,
     depth: 5, // extrude along +Z
     bevelEnabled: false,
   };
-  var circle2geometry = new THREE.ExtrudeGeometry(circle2, circle1extrudeSettings);
+  var circle2geometry = new THREE.ExtrudeGeometry(circle2, circle2extrudeSettings);
   var circle2Mesh = new THREE.Mesh(circle2geometry, material);
   circle2Mesh.position.z = 0.5;
 
