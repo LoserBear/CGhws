@@ -55,7 +55,7 @@ function init(){
 	let spotLight = new THREE.SpotLight( 0xffffff );
 	spotLight.angle = Math.PI/4;
 	spotLight.intensity =0.15
-	spotLight.position.y = 5000;
+	spotLight.position.y = 50000;
 	scene.add(spotLight);
 	
 	for(var x=-30,z=30,i=0;i<9;i++,x+=30){
