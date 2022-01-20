@@ -1,7 +1,7 @@
 import * as THREE from "https://threejs.org/build/three.module.js";
 import {OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
 import { TeapotGeometry } from "https://threejs.org/examples/jsm/geometries/TeapotGeometry.js";
-import {render,onWindowResize} from "./render_v1.js";
+import {render,onWindowResize} from "./render.js";
 
 var camera, scene, renderer;
 var pointLight;
@@ -27,7 +27,8 @@ function init(){
 	var loader = new THREE.TextureLoader();
 	var texture = loader.load(
 	//'https://threejs.org/examples/textures/hardwood2_diffuse.jpg',
-       'http://imgur.com/a/zhRiCYC', 
+       //'http://imgur.com/a/zhRiCYC', 
+		'https://media.istockphoto.com/photos/blank-dish-picture-id1055053018?k=20&m=1055053018&s=612x612&w=0&h=xCongbY9kTTxchgElgHZCaHUlmJfNzLmifIAzBCY2z4=',
 		function(texture) {
         },
 			undefined, 
@@ -37,8 +38,8 @@ function init(){
         );
 	texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
-	texture.repeat.set(20,20);
-	var texMat = new THREE.MeshPhongMaterial({
+	texture.repeat.set(10,10);
+	var texMat = new THREE.MeshBasicMaterial({
             map: texture,
             alphaTest:0.5
     });
